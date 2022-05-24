@@ -1,7 +1,8 @@
 import React from "react";
 import { Avatar, Box, Typography } from "@mui/material";
+import SongTable from "../SongTable/SongTable.js";
 
-const Playlist = (props) => {
+const Playlist = ({ songs }) => {
   return (
     <Box sx={{ bgcolor: "background.paper", flex: 1, overflowY: "auto" }}>
       <Box
@@ -37,6 +38,7 @@ const Playlist = (props) => {
           </Typography>
         </Box>
       </Box>
+      <SongTable songs={songs} />
     </Box>
   );
 };
