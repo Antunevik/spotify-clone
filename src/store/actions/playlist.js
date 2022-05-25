@@ -9,6 +9,7 @@ export const fetchPlaylistFail = (error) => {
 };
 
 export const fetchPlaylistSuccess = (playlists) => {
+  console.log(playlists);
   return { type: actionTypes.FETCH_PLAYLIST_SUCCESS, payload: playlists };
 };
 
@@ -17,6 +18,7 @@ export const fetchPlaylist = (spotifyApi) => {
     dispatch(fetchPlaylistStart());
     try {
       const data = await spotifyApi.getUserPlaylists({ limit: 50 });
+      console.log(data);
       dispatch(fetchPlaylistSuccess(data.body.items));
     } catch (e) {
       dispatch(fetchPlaylistFail(e));

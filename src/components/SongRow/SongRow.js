@@ -25,7 +25,7 @@ const SongRow = ({ image, title, artist, album, duration, i }) => {
         item
         sx={{ flex: 1, display: "flex", alignItems: "center", gap: 2 }}
       >
-        <Avatar variant="square" src={"../../img/bieber.jpg"} alt={title} />
+        <Avatar variant="square" src={image} alt={title} />
         <Box ml={1}>
           <Typography sx={{ fontSize: 16, color: "text.primary" }}>
             {title}

@@ -42,7 +42,7 @@ const Player = () => {
       <Grid
         container
         px={3}
-        sX={{
+        sx={{
           bgcolor: "background.paper",
           height: 100,
           width: "100%",

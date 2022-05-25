@@ -13,87 +13,6 @@ import { connect } from "react-redux";
 import SpotifyWebApi from "spotify-web-api-node";
 import { fetchUser, fetchPlaylist } from "../../store/actions/index";
 
-const songs = [
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-  {
-    image: "/bieber.jpg",
-    title: "Holy",
-    artist: "Justin Bieber",
-    album: "No clue",
-    duration: 180,
-  },
-];
-
-const mockData = [
-  { name: "Rock", playlistId: 123, image: "/Justin-Bieber.png" },
-  { name: "Pop", playlistId: 646, image: "/Justin-Bieber.png" },
-  { name: "Hip hop", playlistId: 834, image: "/Justin-Bieber.png" },
-  { name: "X-mas", playlistId: 5503, image: "/Justin-Bieber.png" },
-  { name: "Code life", playlistId: 4832, image: "/Justin-Bieber.png" },
-];
-
 function App({ token, fetchUser, fetchPlaylist }) {
   const spotifyApi = new SpotifyWebApi();
 
@@ -120,20 +39,17 @@ function App({ token, fetchUser, fetchPlaylist }) {
           }}
         >
           <Box sx={{ flex: 1, overflowY: "auto", display: "flex" }}>
-            <SideNav playlists={mockData} />
+            <SideNav />
             <Routes>
               <Route
                 path="/playlist/:id"
-                element={<Playlist songs={songs} />}
+                element={<Playlist spotifyApi={spotifyApi} />}
               />
               <Route
                 path="/search"
                 element={<h1 style={{ color: "white" }}>Search</h1>}
               />
-              <Route
-                path="/library"
-                element={<Library playlists={mockData} loading={false} />}
-              />
+              <Route path="/library" element={<Library />} />
               <Route path="/" element={<Home />} />
             </Routes>
           </Box>

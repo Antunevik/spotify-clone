@@ -7,10 +7,10 @@ import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 
-function PlaylistItem({ name, playlistId, image, loading }) {
+const PlaylistItem = ({ name, id, images, loading }) => {
   const navigate = useNavigate();
 
-  if (loading)
+  if (loading) {
     return (
       <ListItem disablePadding>
         <ListItemButton>
@@ -21,28 +21,22 @@ function PlaylistItem({ name, playlistId, image, loading }) {
         </ListItemButton>
       </ListItem>
     );
-
+  }
   return (
-    <Box
-      onClick={() => {
-        navigate(`/playlist/${playlistId}`);
-      }}
-      sx={{
-        display: "flex",
-        color: "text.secondary",
-        alignItems: "center",
-      }}
-      py={1}
-    >
-      <Avatar
-        alt="Remy Sharp"
-        src={image}
-        variant="square"
-        sx={{ height: 60, width: 60, marginRight: "15px" }}
-      />
-      {name}
-    </Box>
+    <ListItem disablePadding>
+      <ListItemButton onClick={() => navigate(`/playlist/${id}`)}>
+        <ListItemAvatar sx={{ marginRight: "16px" }}>
+          <Avatar
+            src={images?.[0]?.url}
+            variant="square"
+            width={60}
+            height={60}
+          />
+        </ListItemAvatar>
+        <ListItemText primary={name} sx={{ color: "text.primary" }} />
+      </ListItemButton>
+    </ListItem>
   );
-}
+};
 
 export default PlaylistItem;

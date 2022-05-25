@@ -1,25 +1,26 @@
-import { Box } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Box, Skeleton } from "@mui/material";
+import { Link } from "react-router-dom";
 
-const NavPlaylist = ({ name, playlistId }) => {
-  const navigate = useNavigate();
+const NavPlaylist = ({ name, id, loading }) => {
   return (
-    <Box
-      onClick={() => {
-        navigate(`/playlist/`);
-      }}
-      px={3}
-      py={1}
-      sx={{
-        color: "text.secondary",
-        cursor: "pointer",
-        fontsize: 4,
-        "&:hover": { color: "text.primary" },
-      }}
-    >
-      {name}
-    </Box>
+    <Link to={loading ? "" : `/playlist/${id}`}>
+      <Box
+        px={3}
+        py={1}
+        sx={{
+          color: "text.secondary",
+          cursor: "pointer",
+          fontsize: 4,
+          "&:hover": { color: "text.primary" },
+        }}
+      >
+        {loading ? (
+          <Skeleton variant={"text"} height={"14px"} width={"40px"} />
+        ) : (
+          name
+        )}
+      </Box>
+    </Link>
   );
 };
 
