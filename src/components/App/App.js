@@ -10,22 +10,33 @@ import Home from "../Home/Home";
 import Login from "../Login/Login";
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import SpotifyWebApi from "spotify-web-api-node";
-import { fetchUser, fetchPlaylist } from "../../store/actions/index";
+import { fetchUser, fetchPlaylist, addDevice } from "../../store/actions/index";
+import { WindowRounded } from "@mui/icons-material";
 
-function App({ token, fetchUser, fetchPlaylist }) {
-  const spotifyApi = new SpotifyWebApi();
-
+function App({ token, fetchUser, fetchPlaylist, spotifyApi }) {
   useEffect(() => {
-    spotifyApi.setAccessToken(token);
-
     const getData = async () => {
       fetchUser(spotifyApi);
       fetchPlaylist(spotifyApi);
     };
 
-    if (token) getData();
+    if (token) {
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        setupSpotifyConnect(token, addDevice, spotifyApi);
+      };
+      getData();
+    }
   }, [token, fetchUser]);
+
+  const setupSpotifyConnect = (token, addDevice, spotifyAp) => {
+    const player = new window.Spotify.Player({
+      name: "Antunevik Spotify",
+      getOAuthToken: (cb) => cb(token),
+      volume: 0.5,
+    });
+
+    player.connect();
+  };
 
   return (
     <Box className="App">
@@ -53,7 +64,7 @@ function App({ token, fetchUser, fetchPlaylist }) {
               <Route path="/" element={<Home />} />
             </Routes>
           </Box>
-          <Player />
+          <Player spotifyApi={spotifyApi} />
           <MobileNav />
           <Banner />
         </Box>
@@ -94,6 +105,7 @@ const mapDispatch = (dispatch) => {
   return {
     fetchUser: (api) => dispatch(fetchUser(api)),
     fetchPlaylist: (api) => dispatch(fetchPlaylist(api)),
+    addDevice: (id) => dispatch(addDevice(id)),
   };
 };
 
