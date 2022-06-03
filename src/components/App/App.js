@@ -11,9 +11,8 @@ import Login from "../Login/Login";
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchUser, fetchPlaylist, addDevice } from "../../store/actions/index";
-import { WindowRounded } from "@mui/icons-material";
 
-function App({ token, fetchUser, fetchPlaylist, spotifyApi }) {
+function App({ token, fetchUser, fetchPlaylist, spotifyApi, addDevice }) {
   useEffect(() => {
     const getData = async () => {
       fetchUser(spotifyApi);
@@ -28,11 +27,31 @@ function App({ token, fetchUser, fetchPlaylist, spotifyApi }) {
     }
   }, [token, fetchUser]);
 
-  const setupSpotifyConnect = (token, addDevice, spotifyAp) => {
+  const setupSpotifyConnect = (token, addDevice, spotifyApi) => {
     const player = new window.Spotify.Player({
       name: "Antunevik Spotify",
       getOAuthToken: (cb) => cb(token),
       volume: 0.5,
+    });
+
+    player.addListener("ready", ({ device_id }) => {
+      addDevice(device_id);
+    });
+
+    player.addListener("not_ready", ({ device_id }) => {
+      console.log("Device ID has gone offline", device_id);
+    });
+
+    player.addListener("initialization_error", ({ message }) => {
+      console.error(message);
+    });
+
+    player.addListener("authentication_error", ({ message }) => {
+      console.error(message);
+    });
+
+    player.addListener("account_error", ({ message }) => {
+      console.error(message);
     });
 
     player.connect();
@@ -105,7 +124,7 @@ const mapDispatch = (dispatch) => {
   return {
     fetchUser: (api) => dispatch(fetchUser(api)),
     fetchPlaylist: (api) => dispatch(fetchPlaylist(api)),
-    addDevice: (id) => dispatch(addDevice(id)),
+    addDevice: (device_id) => dispatch(addDevice(device_id)),
   };
 };
 

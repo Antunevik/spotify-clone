@@ -1,9 +1,12 @@
 import { Box, Skeleton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const NavPlaylist = ({ name, id, loading }) => {
   return (
-    <Link to={loading ? "" : `/playlist/${id}`}>
+    <NavLink
+      to={loading ? "" : `/playlist/${id}`}
+      style={{ textDecoration: "none" }}
+    >
       <Box
         px={3}
         py={1}
@@ -20,7 +23,7 @@ const NavPlaylist = ({ name, id, loading }) => {
           name
         )}
       </Box>
-    </Link>
+    </NavLink>
   );
 };
 

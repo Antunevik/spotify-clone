@@ -1,5 +1,3 @@
-import SpotifyWebApi from "spotify-web-api-node";
-import { get } from "spotify-web-api-node/src/http-manager";
 import * as actionTypes from "./actionTypes";
 
 export const addDevice = (device_id) => {
@@ -57,10 +55,44 @@ export const updateSongInfo = (spotifyApi) => {
   };
 };
 
+export const updateSongInfoStart = (spotifyApi) => {
+  return async (dispatch, getState) => {
+    dispatch(updatePlayerStart());
+    try {
+      const state = getState();
+      const { device_id } = state.player;
+      const playback = await spotifyApi.getMyCurrentPlaybackState();
+
+      //Check if a device is playing music right now
+      if (playback.body && playback.body.is_playing) {
+        await spotifyApi.transferMyPlayback([device_id], true);
+        dispatch(pause());
+        dispatch(updateSongInfo(spotifyApi));
+      } else {
+        await spotifyApi.transferMyPlayback([device_id], false);
+
+        const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
+        if (currentSong.body) {
+          dispatch(updateSongInfo(spotifyApi));
+        } else {
+          const id = setInterval(async () => {
+            const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
+            if (currentSong.body) {
+              clearInterval(id);
+              dispatch(updateSongInfo(spotifyApi));
+            }
+          }, 500);
+        }
+      }
+    } catch (e) {
+      dispatch(updatePlayerFail(e));
+    }
+  };
+};
+
 //Det här är inte en action
 const getMyCurrentPlayingTrack = async (spotifyApi) => {
   const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
-  console.log(currentSong);
   const { item } = currentSong.body;
   const duration = item.duration_ms / 1000;
   const progress = currentSong.body.progress_ms / 1000;

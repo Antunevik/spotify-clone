@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { VolumeDown, VolumeUp, VolumeOff } from "@mui/icons-material";
 import { Grid, Stack, Slider } from "@mui/material";
 
-const VolumeControls = (sliderStyle) => {
+const VolumeControls = ({ sliderStyle, spotifyApi }) => {
   const defaultVolume = 40;
   const [volume, setVolume] = useState(defaultVolume);
   const handleVolume = (e, v) => setVolume(v);

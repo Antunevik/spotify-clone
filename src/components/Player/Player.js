@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Grid, Typography, Avatar } from "@mui/material";
-// import PlayerControls from "../PlayerControls/PlayerControls";
 import VolumeControls from "../VolumeControls/VolumeControls";
 import PlayerController from "../PlayerController/PlayerController";
+import { connect } from "react-redux";
+import { updateSongInfo } from "../../store/actions/index";
 
-const Player = () => {
+const Player = ({ updateSongInfo, title, image, artist, spotifyApi }) => {
   const sliderStyle = {
     color: "#fff",
     height: 4,
@@ -37,6 +38,10 @@ const Player = () => {
     },
   };
 
+  useEffect(() => {
+    updateSongInfo(spotifyApi);
+  }, []);
+
   return (
     <Box>
       <Grid
@@ -59,26 +64,40 @@ const Player = () => {
           }}
         >
           <Avatar
-            src="../../img/bieber.jpg"
-            alt="Bieber"
+            src={image?.url}
+            alt="logo"
             variant="square"
             sx={{ width: 56, height: 56, marginRight: 2 }}
           />
           <Box>
             <Typography sx={{ color: "text.primary", fontSize: 14 }}>
-              Holy
+              {title}
             </Typography>
             <Typography sx={{ color: "text.secondary", fontSize: 12 }}>
-              Justin Bieber
+              {artist}
             </Typography>
           </Box>
         </Grid>
-        {/* <PlayerControls sliderStyle={sliderStyle} /> */}
-        <PlayerController sliderStyle={sliderStyle} />
-        <VolumeControls sliderStyle={sliderStyle} />
+        <PlayerController sliderStyle={sliderStyle} spotifyApi={spotifyApi} />
+        <VolumeControls sliderStyle={sliderStyle} spotifyApi={spotifyApi} />
       </Grid>
     </Box>
   );
 };
 
-export default Player;
+const mapState = (state) => {
+  const { title, image, artist } = state.player;
+  return {
+    title,
+    image,
+    artist,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateSongInfo: (api) => dispatch(updateSongInfo(api)),
+  };
+};
+
+export default connect(mapState, mapDispatchToProps)(Player);
