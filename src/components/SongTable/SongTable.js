@@ -3,12 +3,18 @@ import { Box, Grid, Divider } from "@mui/material";
 import { AccessTimeRounded } from "@mui/icons-material";
 import SongRow from "../SongRow/SongRow";
 
-const SongTable = ({ songs, i }) => {
-  const renderSongs = () =>
-    songs.map((song, i) => {
+const SongTable = ({ songs, loading, spotifyApi }) => {
+  const renderSongs = () => {
+    if (loading) {
+      return [1, 2, 3, 4, 5, 6].map((el, i) => (
+        <SongRow loading={loading} key={i} i={i} images={{}} />
+      ));
+    }
+
+    return songs.map((song, i) => {
+      console.log(song.album);
       const albumName = song.album.name;
-      //TODO will cause crashes when there are not images
-      const image = song.album.images[0].url;
+      const { images } = song.album;
       const title = song.name;
       const artist = song.artists[0].name;
       const duration = song.duration_ms / 1000;
@@ -16,16 +22,19 @@ const SongTable = ({ songs, i }) => {
       return (
         <SongRow
           album={albumName}
-          image={image}
+          images={images}
           title={title}
           artist={artist}
           duration={duration}
           key={i}
           i={i}
+          position={song.position}
+          contextUri={song.contextUri}
+          spotifyApi={spotifyApi}
         />
       );
     });
-
+  };
   return (
     <Box
       p={{ xs: 3, md: 4 }}
@@ -37,7 +46,6 @@ const SongTable = ({ songs, i }) => {
       }}
     >
       <Grid
-        key={i}
         container
         px={2}
         py={1}

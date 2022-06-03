@@ -33,16 +33,16 @@ const PlayerController = ({
     }
   };
 
-  const handleSkipPrev = async () => {
+  const handleSkipPrevious = async () => {
     if (loading) return;
-    await spotifyApi.skipToNext();
-    playNewSong(spotifyApi);
+    await spotifyApi.skipToPrevious();
+    playNewSong(spotifyApi, {});
   };
 
   const handleOnSkipNext = async () => {
     if (loading) return;
     await spotifyApi.skipToNext();
-    playNewSong(spotifyApi);
+    playNewSong(spotifyApi, {});
   };
 
   useEffect(() => {
@@ -63,84 +63,82 @@ const PlayerController = ({
     setProgress(v);
   };
 
+  const handleOnChangeCommitted = (event, value) => {
+    spotifyApi.seek(value * 1000);
+  };
+
   return (
-    <Grid
-      item
-      sx={{
-        display: "flex",
-        flex: 1,
-        justifyContent: { xs: "flex-end", md: "center" },
-        alignItems: "center",
-      }}
+    <Stack
+      spacing={2}
+      direction="column"
+      justify="center"
+      alignItems="center"
+      sx={{ width: "100%" }}
     >
       <Stack
-        spacing={0}
-        direction="column"
-        justify="center"
+        spacing={1}
+        direction="row"
+        justifyContent="center"
         alignItems="center"
         sx={{ width: "100%" }}
       >
-        <Stack
-          spacing={1}
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ width: "100%" }}
+        <IconButton
+          size="small"
+          sx={{ color: "white" }}
+          onClick={async () => handleSkipPrevious()}
         >
-          <IconButton
-            size="small"
-            sx={{ color: "white" }}
-            onClick={handleSkipPrev}
-          >
-            <SkipPrevious sx={{ width: 28, height: 28 }} />
-          </IconButton>
-          <IconButton size="small" sx={{ color: "white" }} onClick={togglePlay}>
-            {playing ? (
-              <Pause sx={{ width: 38, height: 38 }} />
-            ) : (
-              <PlayArrow sx={{ width: 38, height: 38 }} />
-            )}
-          </IconButton>
-          <IconButton
-            size="small"
-            sx={{ color: "white" }}
-            onClick={handleOnSkipNext}
-          >
-            <SkipNext sx={{ width: 28, height: 28 }} />
-          </IconButton>
-        </Stack>
-        <Stack
-          spacing={2}
-          justifyContent="center"
-          direction="row"
-          alignItems="center"
-          sx={{ width: "75%" }}
+          <SkipPrevious sx={{ width: 28, height: 28 }} />
+        </IconButton>
+        <IconButton
+          size="small"
+          sx={{ color: "white" }}
+          onClick={async () => togglePlay()}
         >
-          <Typography
-            variant="body1"
-            sx={{ color: "text.secondary", fontSize: 12 }}
-          >
-            {formatTime(progress)}
-          </Typography>
-          <Slider
-            min={0}
-            max={duration}
-            sx={sliderStyle}
-            size="medium"
-            value={progress}
-            aria-label="Default"
-            onChange={handleOnChange}
-            onChangeCommitted={(e, v) => spotifyApi.seek(v * 1000)}
-          />
-          <Typography
-            variant="body1"
-            sx={{ color: "text.secondary", fontSize: 12 }}
-          >
-            {formatTime(duration)}
-          </Typography>
-        </Stack>
+          {playing ? (
+            <Pause sx={{ width: 38, height: 38 }} />
+          ) : (
+            <PlayArrow sx={{ width: 38, height: 38 }} />
+          )}
+        </IconButton>
+        <IconButton
+          size="small"
+          sx={{ color: "white" }}
+          onClick={async () => handleOnSkipNext()}
+        >
+          <SkipNext sx={{ width: 28, height: 28 }} />
+        </IconButton>
       </Stack>
-    </Grid>
+      <Stack
+        spacing={2}
+        justifyContent={"center"}
+        direction="row"
+        alignItems="center"
+        sx={{ width: "75%" }}
+      >
+        <Typography
+          variant="body1"
+          sx={{ color: "text.secondary", fontSize: 12 }}
+        >
+          {formatTime(progress)}
+        </Typography>
+        <Slider
+          min={0}
+          max={duration}
+          sx={sliderStyle}
+          size="medium"
+          value={progress}
+          aria-label="Default"
+          onChange={handleOnChange}
+          onChangeCommitted={handleOnChangeCommitted}
+        />
+        <Typography
+          variant="body1"
+          sx={{ color: "text.secondary", fontSize: 12 }}
+        >
+          {formatTime(duration)}
+        </Typography>
+      </Stack>
+    </Stack>
   );
 };
 

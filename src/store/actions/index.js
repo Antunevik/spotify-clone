@@ -8,4 +8,7 @@ export {
   updateSongInfo,
   playNewSong,
   setProgress,
+  playSpecifiedSong,
+  openOverlay,
+  closeOverlay,
 } from "./player";

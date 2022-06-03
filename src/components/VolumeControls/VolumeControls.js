@@ -5,7 +5,14 @@ import { Grid, Stack, Slider } from "@mui/material";
 const VolumeControls = ({ sliderStyle, spotifyApi }) => {
   const defaultVolume = 40;
   const [volume, setVolume] = useState(defaultVolume);
-  const handleVolume = (e, v) => setVolume(v);
+
+  const handleVolumeChange = async (e, v) => {
+    try {
+      await spotifyApi.setVolume(v);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Grid
@@ -36,7 +43,8 @@ const VolumeControls = ({ sliderStyle, spotifyApi }) => {
           step={1}
           value={volume}
           sx={sliderStyle}
-          onChange={handleVolume}
+          onChange={(e, v) => setVolume(v)}
+          onChangeCommitted={async (e, v) => handleVolumeChange(e, v)}
         />
       </Stack>
     </Grid>

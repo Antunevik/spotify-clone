@@ -8,11 +8,13 @@ import Player from "../Player/Player";
 import Library from "../Library/Library";
 import Home from "../Home/Home";
 import Login from "../Login/Login";
-import { useEffect } from "react";
+import Search from "../Search/Search";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { fetchUser, fetchPlaylist, addDevice } from "../../store/actions/index";
 
 function App({ token, fetchUser, fetchPlaylist, spotifyApi, addDevice }) {
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
   useEffect(() => {
     const getData = async () => {
       fetchUser(spotifyApi);
@@ -21,13 +23,13 @@ function App({ token, fetchUser, fetchPlaylist, spotifyApi, addDevice }) {
 
     if (token) {
       window.onSpotifyWebPlaybackSDKReady = () => {
-        setupSpotifyConnect(token, addDevice, spotifyApi);
+        setupSpotifyConnect(token, addDevice);
       };
       getData();
     }
   }, [token, fetchUser]);
 
-  const setupSpotifyConnect = (token, addDevice, spotifyApi) => {
+  const setupSpotifyConnect = (token, addDevice) => {
     const player = new window.Spotify.Player({
       name: "Antunevik Spotify",
       getOAuthToken: (cb) => cb(token),
@@ -36,6 +38,7 @@ function App({ token, fetchUser, fetchPlaylist, spotifyApi, addDevice }) {
 
     player.addListener("ready", ({ device_id }) => {
       addDevice(device_id);
+      setIsPlayerReady(true);
     });
 
     player.addListener("not_ready", ({ device_id }) => {
@@ -77,13 +80,13 @@ function App({ token, fetchUser, fetchPlaylist, spotifyApi, addDevice }) {
               />
               <Route
                 path="/search"
-                element={<h1 style={{ color: "white" }}>Search</h1>}
+                element={<Search spotifyApi={spotifyApi} />}
               />
               <Route path="/library" element={<Library />} />
               <Route path="/" element={<Home />} />
             </Routes>
           </Box>
-          <Player spotifyApi={spotifyApi} />
+          {isPlayerReady && <Player spotifyApi={spotifyApi} />}
           <MobileNav />
           <Banner />
         </Box>

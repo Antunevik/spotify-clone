@@ -64,12 +64,18 @@ const Playlist = ({ spotifyApi, loading }) => {
           <Typography sx={{ fontSize: 12, fontWeight: "bold" }}>
             Playlist
           </Typography>
-          <Typography sx={{ fontSize: 42, fontWeight: "bold" }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 42, md: 72 },
+              fontWeight: "bold",
+              color: "white",
+            }}
+          >
             {playlistInfo?.name}
           </Typography>
         </Box>
       </Box>
-      <SongTable songs={songs} />
+      <SongTable songs={songs} loading={loading} spotifyApi={spotifyApi} />
     </Box>
   );
 };

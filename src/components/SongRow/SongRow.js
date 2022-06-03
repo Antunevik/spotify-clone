@@ -1,8 +1,39 @@
 import React from "react";
-import { Avatar, Box, Typography, Grid, Divider } from "@mui/material";
+import { Avatar, Box, Typography, Grid, Skeleton } from "@mui/material";
 import { formatTime } from "../../utilities/functions";
+import { playSpecifiedSong } from "../../store/actions";
+import { connect } from "react-redux";
 
-const SongRow = ({ image, title, artist, album, duration, i }) => {
+const SongRow = ({
+  images,
+  title,
+  artist,
+  album,
+  duration,
+  i,
+  loading,
+  spotifyApi,
+  contextUri,
+  position,
+  playSpecifiedSong,
+}) => {
+  const image = images?.length > 0 ? images[0] : null;
+
+  const onRowClick = async () => {
+    const song = {
+      context_uri: contextUri,
+      offset: { position },
+      position_ms: 0,
+      title,
+      image: image ? image : {},
+      artist,
+      duration,
+      position,
+    };
+
+    await playSpecifiedSong(spotifyApi, song);
+  };
+
   return (
     <Grid
       container
@@ -13,7 +44,9 @@ const SongRow = ({ image, title, artist, album, duration, i }) => {
         color: "text.secondary",
         fontSize: 14,
         cursor: "pointer",
+        "&:hover": { bgcolor: "#F0790030" },
       }}
+      onClick={async () => onRowClick()}
     >
       <Grid
         item
@@ -25,13 +58,25 @@ const SongRow = ({ image, title, artist, album, duration, i }) => {
         item
         sx={{ flex: 1, display: "flex", alignItems: "center", gap: 2 }}
       >
-        <Avatar variant="square" src={image} alt={title} />
+        {loading ? (
+          <Skeleton variant="rectangular" width={40} height={40} />
+        ) : (
+          <Avatar src={image?.url} alt={title} variant="square" />
+        )}
         <Box ml={1}>
           <Typography sx={{ fontSize: 16, color: "text.primary" }}>
-            {title}
+            {loading ? (
+              <Skeleton variant="text" width={130} height={24} />
+            ) : (
+              title
+            )}
           </Typography>
           <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
-            {artist}
+            {loading ? (
+              <Skeleton variant="text" width={50} height={18} />
+            ) : (
+              artist
+            )}
           </Typography>
         </Box>
       </Grid>
@@ -44,7 +89,7 @@ const SongRow = ({ image, title, artist, album, duration, i }) => {
           alignItems: "center",
         }}
       >
-        {album}
+        {loading ? <Skeleton variant="text" width={50} height={14} /> : album}
       </Grid>
       <Grid
         item
@@ -55,10 +100,20 @@ const SongRow = ({ image, title, artist, album, duration, i }) => {
           alignItems: "center",
         }}
       >
-        {formatTime(duration)}
+        {loading ? (
+          <Skeleton variant="text" width={50} height={14} />
+        ) : (
+          formatTime(duration)
+        )}
       </Grid>
     </Grid>
   );
 };
 
-export default SongRow;
+const mapDispatch = (dispatch) => {
+  return {
+    playSpecifiedSong: (api, song) => dispatch(playSpecifiedSong(api, song)),
+  };
+};
+
+export default connect(null, mapDispatch)(SongRow);
